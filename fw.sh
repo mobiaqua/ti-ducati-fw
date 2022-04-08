@@ -41,17 +41,18 @@ prepare_xdc_tools()
 	if [ ! -e ${BUILD_DIR}/xdc ]; then
 		case `uname -s` in
 		Darwin)
-			curl http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/rtsc/${XDCCOREVERSION}/exports/xdccore/xdctools_${XDCCOREVERSION}_core_macos.zip?tracked=1 \
+			curl https://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/rtsc/${XDCCOREVERSION}/exports/xdccore/xdctools_${XDCCOREVERSION}_core_macos.zip?tracked=1 \
 			--output xdctools_${XDCCOREVERSION}_core_macos.zip
 			;;
 		Linux)
-			curl http://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/rtsc/${XDCCOREVERSION}/exports/xdccore/xdctools_${XDCCOREVERSION}_core_linux.zip?tracked=1 \
+			curl https://software-dl.ti.com/dsps/dsps_public_sw/sdo_sb/targetcontent/rtsc/${XDCCOREVERSION}/exports/xdccore/xdctools_${XDCCOREVERSION}_core_linux.zip?tracked=1 \
 			--output xdctools_${XDCCOREVERSION}_core_linux.zip
 		;;
 		esac
 		unzip xdctools_*_core_*.zip
 		rm -f *.zip
 		mv xdctools_*_core xdc
+		rm -f xdc/gmake
 	fi
 	cd ${BASE_ROOT}
 }
@@ -86,18 +87,14 @@ prepare_arm_compiler()
 build_fw() {
 	mkdir -f ${BUILD_DIR} 2> /dev/null
 
-	if [ "$C64T" == "yes" ]; then
-		fetch_repo bios git://github.com/mobiaqua/ti-sysbios-c64t.git
-	else
-		fetch_repo bios git://github.com/mobiaqua/ti-sysbios.git
-	fi
-	fetch_repo ce git://github.com/mobiaqua/ti-ce.git
-	fetch_repo fc git://github.com/mobiaqua/ti-fc.git
-	fetch_repo osal git://github.com/mobiaqua/ti-osal.git
-	fetch_repo xdais git://github.com/mobiaqua/ti-xdais.git
-	fetch_repo codecs git://github.com/mobiaqua/ti-codecs.git
-	fetch_repo ipc git://github.com/mobiaqua/ti-ipcdev.git
-	fetch_repo ipumm git://github.com/mobiaqua/ti-ipumm.git
+	fetch_repo bios https://github.com/mobiaqua/ti-sysbios.git
+	fetch_repo ce https://github.com/mobiaqua/ti-ce.git
+	fetch_repo fc https://github.com/mobiaqua/ti-fc.git
+	fetch_repo osal https://github.com/mobiaqua/ti-osal.git
+	fetch_repo xdais https://github.com/mobiaqua/ti-xdais.git
+	fetch_repo codecs https://github.com/mobiaqua/ti-codecs.git
+	fetch_repo ipc https://github.com/mobiaqua/ti-ipcdev.git
+	fetch_repo ipumm https://github.com/mobiaqua/ti-ipumm.git
 
 	prepare_xdc_tools
 	prepare_arm_compiler
@@ -108,7 +105,14 @@ build_fw() {
 	cp sources/ipumm/*.xem* bin/
 }
 
-C64T=no
+case `uname -s` in
+Darwin)
+	export XDCTOOLS_GMAKE=gmake
+	;;
+Linux)
+	export XDCTOOLS_GMAKE=make
+	;;
+esac
 TCGARMVERSION=20.2.6.LTS
 TCGARMMAJORVERSION=`echo ${TCGARMVERSION} | cut -c 1-3`
 XDCCOREVERSION=3_62_00_08

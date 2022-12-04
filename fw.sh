@@ -63,7 +63,7 @@ prepare_arm_compiler()
 	if [ ! -e ${BUILD_DIR}/armt ]; then
 		case `uname -s` in
 		Darwin)
-			curl http://downloads.ti.com/codegen/esd/cgt_public_sw/TMS470/${TCGARMVERSION}/ti_cgt_tms470_${TCGARMVERSION}_osx_installer.app.zip?tracked=1 \
+			curl https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-sDOoXkUcde/${TCGARMVERSION}/ti_cgt_tms470_${TCGARMVERSION}_osx_installer.app.zip \
 				--output ti_cgt_tms470_${TCGARMVERSION}_osx_installer.zip
 			unzip ti_cgt_tms470*.zip
 			ti_cgt_tms470_*/Contents/MacOS/osx-x86_64 --mode unattended --prefix .
@@ -72,10 +72,10 @@ prepare_arm_compiler()
 			rm -f *.zip
 			;;
 		Linux)
-			curl http://downloads.ti.com/codegen/esd/cgt_public_sw/TMS470/${TCGARMVERSION}/ti_cgt_tms470_${TCGARMVERSION}_linux_installer_x86.bin?tracked=1 \
-				--output ti_cgt_tms470_${TCGARMVERSION}_linux_installer_x86.bin
+			curl https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-sDOoXkUcde/${TCGARMVERSION}/ti_cgt_tms470_${TCGARMVERSION}_linux-x64_installer.bin \
+				--output ti_cgt_tms470_${TCGARMVERSION}_linux-x64_installer.bin
 			chmod +x *.bin
-			./ti_cgt_tms470_*_linux_installer_x86.bin --mode unattended --prefix .
+			./ti_cgt_tms470_*_linux-x64_installer --mode unattended --prefix .
 			mv ti-cgt-arm* armt
 			rm -rf ti_cgt_tms470_*
 			;;
